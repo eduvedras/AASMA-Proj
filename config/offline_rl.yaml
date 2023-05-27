@@ -10,7 +10,7 @@ discrete_action_space: true
 experiment: vanilla
 seed: 0
 
-num_train_steps: 40000
+num_train_steps: 10000
 
 eval_frequency: 1000
 num_eval_episodes: 3

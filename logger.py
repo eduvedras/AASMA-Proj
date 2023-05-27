@@ -38,7 +38,10 @@ AGENT_TRAIN_FORMAT = {
     ],
     'bc': [
         ('batch_reward', 'BR', 'float'),
-    ]
+    ],
+    'random': [
+        ('batch_reward', 'BR', 'float'),
+    ],
 }
 
 

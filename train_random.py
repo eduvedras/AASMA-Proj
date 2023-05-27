@@ -39,22 +39,13 @@ class Workspace(object):
         self.env_agent_types = get_agent_types(self.env)
         self.agent_indexes = find_index(self.env_agent_types, 'ally')
         self.adversary_indexes = find_index(self.env_agent_types, 'adversary')
-
-        # OU Noise settings
-        self.num_seed_steps = cfg.num_seed_steps
-        self.ou_exploration_steps = cfg.ou_exploration_steps
-        self.ou_init_scale = cfg.ou_init_scale
-        self.ou_final_scale = cfg.ou_final_scale
-
+        
         if self.discrete_action:
             cfg.agent.params.obs_dim = self.env.observation_space.n
             cfg.agent.params.action_dim = self.env.action_space.n
             cfg.agent.params.action_range = list(range(cfg.agent.params.action_dim))
         else:
-            # Don't use!
-            cfg.agent.params.obs_dim = self.env.observation_space[0].shape[0]
-            cfg.agent.params.action_dim = self.env.action_space[0].shape[0]
-            cfg.agent.params.action_range = [-1, 1]
+            print("Problem with continuous action space")
 
         cfg.agent.params.agent_index = self.agent_indexes
         cfg.agent.params.critic.input_dim = cfg.agent.params.obs_dim + cfg.agent.params.action_dim
@@ -109,7 +100,6 @@ class Workspace(object):
         start_time = time.time()
         while self.step < self.cfg.num_train_steps + 1:
             if done or self.step % self.cfg.eval_frequency == 0:
-
                 if self.step > 0:
                     self.logger.log('train/duration', time.time() - start_time, self.step)
                     start_time = time.time()
@@ -123,8 +113,6 @@ class Workspace(object):
                 self.logger.log('train/episode_reward', episode_reward, self.step)
 
                 obs = self.env.reset()
-
-                self.ou_percentage = max(0, self.ou_exploration_steps - (self.step - self.num_seed_steps)) / self.ou_exploration_steps
 
                 episode_reward = 0
                 episode_step = 0
@@ -167,7 +155,7 @@ class Workspace(object):
                 self.replay_buffer.save(self.work_dir, self.step - 1)
 
 
-@hydra.main(config_path='config', config_name='train')
+@hydra.main(config_path='config', config_name='train_random')
 def main(cfg: DictConfig) -> None:
     workspace = Workspace(cfg)
     workspace.run()

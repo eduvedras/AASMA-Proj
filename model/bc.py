@@ -40,6 +40,7 @@ class BahaviorClone(object):
             agent.eval()
             actions.append(agent.act(obs, explore=sample).squeeze())
             agent.train()
+        print(np.array(actions))
         return np.array(actions)
 
 

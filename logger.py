@@ -42,6 +42,12 @@ AGENT_TRAIN_FORMAT = {
     'random': [
         ('batch_reward', 'BR', 'float'),
     ],
+    'qlearning': [
+        ('batch_reward', 'BR', 'float'),
+    ],
+    'sarsa': [
+        ('batch_reward', 'BR', 'float'),
+    ]
 }
 
 

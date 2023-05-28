@@ -1,0 +1,40 @@
+defaults:
+    - agent: qlearning
+
+# Experiment Settings
+env: asymmetric_advantages
+episode_length: 500
+discrete_action_space: true
+
+experiment: vanilla
+seed: 0
+num_seed_steps: 0
+
+num_train_steps: 40000
+replay_buffer_capacity: 5e4
+
+eval_frequency: 1000
+num_eval_episodes: 1
+
+common_reward: true
+
+exploration_prob: 1
+exploration_decreasing_decay: 0.001
+min_exploration_prob: 0.01
+
+device: cuda
+
+# Logging Settings
+log_frequency: 1000
+log_save_tb: true
+save_video: true
+render: false
+
+# Save Buffer
+save_model: false
+save_replay_buffer: false
+
+# hydra configuration
+hydra:
+    run:
+        dir: ./experiment/${now:%Y.%m.%d}/${now:%H%M}_${agent.name}_${experiment}

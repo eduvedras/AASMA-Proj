@@ -2,7 +2,7 @@ defaults:
     - agent: qlearning
 
 # Experiment Settings
-env: asymmetric_advantages
+env: cramped_room
 episode_length: 500
 discrete_action_space: true
 
@@ -10,16 +10,16 @@ experiment: vanilla
 seed: 0
 num_seed_steps: 0
 
-num_train_steps: 40000
+num_train_steps: 150000
 replay_buffer_capacity: 5e4
 
-eval_frequency: 1000
-num_eval_episodes: 1
+eval_frequency: 5000
+num_eval_episodes: 3
 
 common_reward: true
 
 exploration_prob: 1
-exploration_decreasing_decay: 0.001
+exploration_decreasing_decay: 0.01
 min_exploration_prob: 0.01
 
 device: cuda

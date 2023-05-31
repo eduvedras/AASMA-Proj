@@ -33,7 +33,7 @@ class Workspace(object):
         self.device = torch.device(cfg.device)
         self.discrete_action = cfg.discrete_action_space
         self.save_replay_buffer = cfg.save_replay_buffer
-        # self.env = NormalizedEnv(make_env(cfg.env, discrete_action=self.discrete_action))
+        
         self.env = OverCookedEnv(scenario=self.cfg.env, episode_length=self.cfg.episode_length)
         
         self.exploration_prob = cfg.exploration_prob
@@ -85,6 +85,7 @@ class Workspace(object):
                 action = self.agent.act(obs, self.exploration_prob, sample=False)
                 obs, rewards, done, info = self.env.step(action)
                 rewards = np.array(info['shaped_r_by_agent']).reshape(-1, 1)
+                rewards += np.array(info['sparse_r_by_agent']).reshape(-1, 1)
 
                 self.video_recorder.record(self.env)
 
@@ -119,8 +120,6 @@ class Workspace(object):
                 obs = self.env.reset()
                 self.exploration_prob = max(self.min_exploration_prob, np.exp(-self.exploration_decreasing_decay*episode))
 
-                #self.ou_percentage = max(0, self.ou_exploration_steps - (self.step - self.num_seed_steps)) / self.ou_exploration_steps
-
                 episode_reward = 0
                 episode_step = 0
                 episode += 1
@@ -135,11 +134,10 @@ class Workspace(object):
                 agent_actions = self.agent.act(agent_observation, self.exploration_prob,sample=True)
                 action = agent_actions
 
-            #if self.step >= self.cfg.num_seed_steps and self.step >= self.agent.batch_size:
-                #self.agent.update(self.replay_buffer, self.logger, self.step)
-
             next_obs, rewards, done, info = self.env.step(action)
+            
             rewards = np.array(info['shaped_r_by_agent']).reshape(-1, 1)
+            rewards += np.array(info['sparse_r_by_agent']).reshape(-1, 1)
             
             self.agent.update(obs, next_obs, action, rewards)
 

@@ -22,26 +22,6 @@ COMMON_EVAL_FORMAT = [
 
 
 AGENT_TRAIN_FORMAT = {
-    'ddpg': [
-        ('batch_reward', 'BR', 'float'),
-        ('actor_loss', 'AL', 'float'),
-        ('critic_loss', 'CL', 'float'),
-    ],
-    'maddpg': [
-        ('batch_reward', 'BR', 'float'),
-    ],
-    'rem_maddpg': [
-        ('batch_reward', 'BR', 'float'),
-    ],
-    'bcq_maddpg': [
-        ('batch_reward', 'BR', 'float'),
-    ],
-    'bc': [
-        ('batch_reward', 'BR', 'float'),
-    ],
-    'random': [
-        ('batch_reward', 'BR', 'float'),
-    ],
     'qlearning': [
         ('batch_reward', 'BR', 'float'),
     ],

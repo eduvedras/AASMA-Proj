@@ -4,7 +4,6 @@ import cv2
 from recoder import VideoRecorder
 from logger import Logger
 from replay_buffer import ReplayBuffer
-from utils.train import set_seed_everywhere
 from utils.environment import get_agent_types
 
 from overcooked_ai_py.env import OverCookedEnv
@@ -29,7 +28,6 @@ class Workspace(object):
                              log_frequency=cfg.log_frequency,
                              agent=cfg.agent.name)
 
-        set_seed_everywhere(cfg.seed)
         self.device = torch.device(cfg.device)
         self.discrete_action = cfg.discrete_action_space
         self.save_replay_buffer = cfg.save_replay_buffer
@@ -108,7 +106,7 @@ class Workspace(object):
                 if self.step > 0:
                     self.logger.log('train/duration', time.time() - start_time, self.step)
                     start_time = time.time()
-                    self.logger.dump(self.step, save=(self.step > self.cfg.num_seed_steps))
+                    self.logger.dump(self.step, save=(self.step > 0))
 
                 if self.step > 0 and self.step % self.cfg.eval_frequency == 0:
                     self.logger.log('eval/episode', episode, self.step)
@@ -126,13 +124,9 @@ class Workspace(object):
 
                 self.logger.log('train/episode', episode, self.step)
 
-            if self.step < self.cfg.num_seed_steps:
-                action = np.array([self.env.action_space.sample() for _ in self.env_agent_types])
-                if self.discrete_action: action = action.reshape(-1, 1)
-            else:
-                agent_observation = obs[self.agent_indexes]
-                agent_actions = self.agent.act(agent_observation, self.exploration_prob,sample=True)
-                action = agent_actions
+            agent_observation = obs[self.agent_indexes]
+            agent_actions = self.agent.act(agent_observation, self.exploration_prob,sample=True)
+            action = agent_actions
 
             next_obs, rewards, done, info = self.env.step(action)
             
@@ -165,7 +159,7 @@ class Workspace(object):
                 self.replay_buffer.save(self.work_dir, self.step - 1)
 
 
-@hydra.main(config_path='config', config_name='train_ql')
+@hydra.main(config_path='config', config_name='train')
 def main(cfg: DictConfig) -> None:
     workspace = Workspace(cfg)
     workspace.run()

@@ -8,7 +8,7 @@ params:
   agent_index: ??? # Different by environments
   device: ${device}
   discrete_action_space: ${discrete_action_space}
-  lr: 0.1
+  lr: 0.01
   gamma: 0.95
 
   critic:

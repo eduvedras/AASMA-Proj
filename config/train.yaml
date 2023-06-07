@@ -7,8 +7,6 @@ episode_length: 500
 discrete_action_space: true
 
 experiment: vanilla
-seed: 0
-num_seed_steps: 0
 
 num_train_steps: 150000
 replay_buffer_capacity: 5e4
